@@ -45,7 +45,7 @@ class City(models.Model):
 class Airport(models.Model):
     name = models.CharField(max_length=133, unique=True)
     closest_big_city = models.ForeignKey(City, on_delete=models.DO_NOTHING, related_name="airports")
-    image = models.ImageField(null=True, upload_to=airport_image_file_path)
+    image = models.ImageField(null=True, blank=True, upload_to=airport_image_file_path)
 
     class Meta:
         ordering = ["name"]
@@ -99,7 +99,7 @@ class Airplane(models.Model):
     rows = models.IntegerField()
     seats_in_row = models.IntegerField()
     airplane_type = models.ForeignKey(AirplaneType, on_delete=models.SET_NULL, null=True, related_name="airplanes")
-    image = models.ImageField(null=True, upload_to=airplane_image_file_path)
+    image = models.ImageField(null=True, blank=True, upload_to=airplane_image_file_path)
 
     class Meta:
         ordering = ["name"]
@@ -117,17 +117,13 @@ class Flight(models.Model):
     airplane = models.ForeignKey(Airplane, on_delete=models.DO_NOTHING, related_name="flights")
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
+    crews = models.ManyToManyField(Crew, related_name="flights")
 
     class Meta:
         ordering = ["departure_time"]
     
     def __str__(self):
         return f"{self.route} {self.departure_time}"
-
-
-class CrewFlight(models.Model):
-    crew = models.ForeignKey(Crew, on_delete=models.DO_NOTHING, related_name="crew_flights")
-    flight = models.ForeignKey(Flight, on_delete=models.CASCADE, related_name="flight_crews")
 
 
 class Ticket(models.Model):
@@ -138,7 +134,7 @@ class Ticket(models.Model):
 
     
     def __str__(self):
-        return self.flight
+        return str(self.flight)
 
     @staticmethod
     def validate_ticket(row, seat, flight, error_to_raise):
@@ -161,7 +157,7 @@ class Ticket(models.Model):
         Ticket.validate_ticket(
             self.row,
             self.seat,
-            self.movie_session.cinema_hall,
+            self.flight.airplane,
             ValidationError,
         )
 

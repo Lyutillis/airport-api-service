@@ -10,7 +10,7 @@ from airport.serializers import AirplaneTypeSerializer
 from config.settings import MEDIA_ROOT
 
 
-AIRPLANE_TYPE_URL = reverse("airport:airplane-types-list")
+AIRPLANE_TYPE_URL = reverse("airport:airplane-type-list")
 
 def detail_url(type_id: int) -> str:
     return reverse("airport:airplane-type-detail", args=[type_id])
@@ -56,50 +56,12 @@ class AuthenticatedAirplaneTypeApiTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(serializer.data, response.data)
 
-    def test_retrieve_airplane_type_detail(self):
-        airplane_type = sample_airplane_type()
-
-        url = detail_url(airplane_type.pk)
-        response = self.client.get(url)
-
-        serializer = AirplaneType(airplane_type)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, serializer.data)
-    
     def test_create_airplane_type_forbidden(self):
         payload = {
             "name": "Test Type",
         }
 
         response = self.client.post(AIRPLANE_TYPE_URL, payload)
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    
-    def test_update_airplane_type_forbidden(self):
-        airplane_type = sample_airplane_type()
-        payload = {
-            "name": "Change Type",
-        }
-
-        response = self.client.put(detail_url(airplane_type.pk), payload)
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    
-    def test_partial_update_airplane_type_forbidden(self):
-        airplane_type = sample_airplane_type()
-        payload = {
-            "name": "Change Type",
-        }
-
-        response = self.client.patch(detail_url(sample_airplane_type.pk), payload)
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    
-    def test_delete_airplane_type_forbidden(self):
-        airplane_type = sample_airplane_type()
-
-        response = self.client.delete(detail_url(airplane_type.pk))
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 

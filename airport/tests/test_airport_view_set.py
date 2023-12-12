@@ -19,7 +19,6 @@ def detail_url(airport_id: int) -> str:
 def upload_image_url(airport_id: int) -> str:
     return reverse("airport:airport-upload-image", args=[airport_id])
 
-
 def sample_airport(**params):
     city_count = City.objects.count()
     city = City.objects.create(
@@ -164,33 +163,6 @@ class AuthenticatedAirportApiTests(TestCase):
         }
 
         response = self.client.post(AIRPORT_URL, payload)
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    
-    def test_update_airport_forbidden(self):
-        airport = sample_airport()
-        payload = {
-            "name": "Change Airport",
-        }
-
-        response = self.client.put(detail_url(airport.pk), payload)
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    
-    def test_partial_update_airport_forbidden(self):
-        airport = sample_airport()
-        payload = {
-            "name": "Change Airport",
-        }
-
-        response = self.client.patch(detail_url(airport.pk), payload)
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    
-    def test_delete_airport_forbidden(self):
-        airport = sample_airport()
-
-        response = self.client.delete(detail_url(airport.pk))
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 

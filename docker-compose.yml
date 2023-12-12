@@ -1,0 +1,58 @@
+version: '3.7'
+
+services:
+  web-mate:
+    restart: always
+    build: .
+    container_name: backend_mate_movie
+    command: ["/entrypoint.sh"]
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - mate_movie_network
+    depends_on:
+      - db
+
+  db:
+    image: 'postgres:latest'
+    container_name: postgres_mate_movie
+    env_file:
+      - .env
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mate_movie_data:/var/lib/postgresql/data/
+    networks:
+      - mate_movie_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_mate_movie
+    ports:
+      - "3333:80"
+    env_file:
+      - .env
+    links:
+      - db:db
+    depends_on:
+      - db
+    volumes:
+      - mate_pgadmin_data:/var/lib/pgadmin
+    networks:
+      - mate_movie_network
+
+networks:
+  mate_movie_network:
+    driver: bridge
+
+volumes:
+  mate_movie_data:
+    driver: local
+  mate_pgadmin_data:
+    driver: local
+

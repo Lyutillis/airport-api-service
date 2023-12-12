@@ -25,6 +25,7 @@ from airport.serializers import (
     OrderSerializer,
     OrderListSerializer,
     RouteSerializer,
+    RouteListSerializer,
     AirplaneSerializer,
     FlightSerializer,
     FlightListSerializer,
@@ -162,10 +163,10 @@ class CrewViewSet(
 ):
     queryset = (
         Crew.objects
-        .all()
+        .prefetch_related("flights")
         .annotate(
             flight_count=(
-                Count("crew_flights")
+                Count("flights")
             )
         )
     )
@@ -192,7 +193,7 @@ class CrewViewSet(
 
         if flight_ids:
             flight_ids = self._params_to_int(flight_ids)
-            queryset = queryset.filter(crew_flights__flight__pk__in=flight_ids)
+            queryset = queryset.filter(flights__pk__in=flight_ids)
 
         return queryset.distinct()
 
@@ -215,7 +216,6 @@ class CrewViewSet(
 class AirplaneTypeViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
     viewsets.GenericViewSet
 ):
     queryset = AirplaneType.objects.all()
@@ -261,6 +261,12 @@ class RouteViewSet(
     def _params_to_str(qs):
         """Converts a string with names to a list"""
         return [string for string in qs.split(",")]
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return RouteListSerializer
+
+        return RouteSerializer
 
     def get_queryset(self):
         """Retrieve the routes with filters"""
@@ -379,7 +385,7 @@ class FlightViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Retrieve the flights with filters"""
         date = self.request.query_params.get("date")
-        route = self.request.query_params.get("movie")
+        route = self.request.query_params.get("route")
 
         queryset = self.queryset
 

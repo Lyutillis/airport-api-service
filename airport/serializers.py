@@ -25,6 +25,7 @@ class AirportSerializer(serializers.ModelSerializer):
 
 
 class AirportListSerializer(AirportSerializer):
+    closest_big_city = serializers.SlugRelatedField(many=False, slug_field="name", read_only=True)
     routes_count = serializers.IntegerField(read_only=True)
 
     class Meta:
@@ -47,12 +48,14 @@ class AirplaneTypeSerializer(serializers.ModelSerializer):
 
 
 class RouteSerializer(serializers.ModelSerializer):
-    source = AirportSerializer(many=False, read_only=True)
-    destination = AirportSerializer(many=False, read_only=True)
-
     class Meta:
         model = Route
         fields = ("id", "source", "destination", "distance",)
+
+
+class RouteListSerializer(RouteSerializer):
+    source = AirportSerializer(many=False, read_only=True)
+    destination = AirportSerializer(many=False, read_only=True)
 
 
 class AirportRouteSerializer(RouteSerializer):
@@ -65,6 +68,7 @@ class AirportRouteSerializer(RouteSerializer):
 
 
 class AirportDetailSerializer(AirportSerializer):
+    closest_big_city = serializers.SlugRelatedField(many=False, slug_field="name", read_only=True)
     source_routes = AirportRouteSerializer(many=True, read_only=True)
     destination_routes = AirportRouteSerializer(many=True, read_only=True)
 
@@ -94,7 +98,7 @@ class AirplaneSerializer(serializers.ModelSerializer):
 class FlightSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flight
-        fields = ("id", "route", "departure_time", "arrival_time",)
+        fields = ("id", "route", "airplane", "departure_time", "arrival_time", "crews")
 
 
 class FlightListSerializer(FlightSerializer):
@@ -180,7 +184,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ("id", "created_at", "tickets",)
+        fields = ("id", "tickets", "created_at")
     
     def create(self, validated_data):
         with transaction.atomic():
