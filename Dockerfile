@@ -1,17 +1,30 @@
-FROM python:3.10
+FROM python:3.8.18-alpine
+LABEL maintainer="chemuranov@gmail.com"
 
-WORKDIR /usr/src/app
+ENV PYTHONUNBUFFERED=1
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PIP_NO_CASHE_DIR off
+WORKDIR /app/
 
-RUN apt-get update && apt-get install -y gcc libpq-dev netcat-openbsd
+COPY requirements.txt requirements.txt
 
-COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN apk update && apk add -u libpq-dev gcc
+
+RUN apk add -u zlib-dev jpeg-dev gcc musl-dev
+
+RUN pip install -r requirements.txt
+
+RUN mkdir -p /vol/web/media
 
 COPY . .
 
-COPY entrypoint.sh /entrypoint.sh
+RUN adduser --disabled-password --no-create-home django-user
+
+COPY --chmod=755 entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
+
+RUN chown -R django-user /vol/
+
+RUN chmod -R 755 /vol/web/
+
+USER django-user
