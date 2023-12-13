@@ -10,6 +10,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from airport.models import Country, City, Airport, Route, Flight, Route, AirplaneType, Airplane, Crew, Order, Ticket
 from airport.serializers import OrderSerializer, OrderListSerializer, TicketSerializer
+from airport.views import OrderPagination
 from config.settings import MEDIA_ROOT
 
 
@@ -84,12 +85,24 @@ class AuthenticatedOrderApiTests(TestCase):
         serializer = OrderListSerializer(orders, many=True)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(serializer.data, response.data)
+        self.assertEqual(serializer.data, response.data["results"])
 
     # def test_create_order(self):
     #     flight = sample_flight()
+    #     tickets = [
+    #         {
+    #             "row": 1,
+    #             "seat": 1,
+    #             "flight": flight,
+    #         },
+    #         {
+    #             "row": 1,
+    #             "seat": 2,
+    #             "flight": flight,
+    #         }
+    #     ]
     #     payload = {
-    #         "tickets": [1, 2],
+    #         "tickets": TicketSerializer(tickets, many=True).data,
     #     }
 
     #     response = self.client.post(ORDER_URL, payload)

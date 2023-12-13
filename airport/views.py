@@ -5,6 +5,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 
 from airport.models import (
     Airport,
@@ -34,6 +35,11 @@ from airport.serializers import (
     AirplaneImageSerializer,
 )
 from airport.permissions import IsAdminOrIfAuthenticatedReadOnly
+
+
+class OrderPagination(PageNumberPagination):
+    page_size = 5
+    max_page_size = 100
 
 
 class AirportViewSet(
@@ -232,7 +238,7 @@ class OrderViewSet(
         "tickets__flight__route", "tickets__flight__airplane"
     )
     serializer_class = OrderSerializer
-    # pagination_class = OrderPagination
+    pagination_class = OrderPagination
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
