@@ -4,11 +4,8 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from django.contrib.auth import get_user_model
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 from airport.models import Country, City, Airport, Route
-from airport.serializers import RouteSerializer
-from config.settings import MEDIA_ROOT
 
 
 ROUTE_URL = reverse("airport:route-list")

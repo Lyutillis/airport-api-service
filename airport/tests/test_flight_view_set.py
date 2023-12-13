@@ -6,11 +6,10 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from django.contrib.auth import get_user_model
-from django.core.files.uploadedfile import SimpleUploadedFile
+
 
 from airport.models import Country, City, Airport, Route, Flight, Route, AirplaneType, Airplane, Crew
-from airport.serializers import FlightListSerializer, FlightDetailSerializer
-from config.settings import MEDIA_ROOT
+from airport.serializers import FlightDetailSerializer
 
 
 FLIGHT_URL = reverse("airport:flight-list")
@@ -195,9 +194,15 @@ class AdminFlightApiTests(TestCase):
 
     def test_update_flight(self):
         flight, update_data = sample_flights()
+        airplane = Airplane.objects.create(
+            name="New Test Airplane",
+            rows=10,
+            seats_in_row=8,
+            airplane_type=AirplaneType.objects.first()
+        )
         payload = {
             "route": update_data.route.pk,
-            "airplane": update_data.airplane.pk,
+            "airplane": airplane.pk,
             "departure_time": timezone.now(),
             "arrival_time": timezone.now(),
             "crews": [

@@ -3,8 +3,6 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from airport.models import (
-    Country,
-    City,
     Airport,
     Crew,
     AirplaneType,

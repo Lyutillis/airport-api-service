@@ -4,12 +4,10 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from django.contrib.auth import get_user_model
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils import timezone
 
 from airport.models import Country, City, Airport, Route, Crew, Route, Airplane, Flight, AirplaneType
-from airport.serializers import CrewSerializer, CrewDetailSerializer, AirportDetailSerializer
-from config.settings import MEDIA_ROOT
+from airport.serializers import CrewDetailSerializer
 
 
 CREW_URL = reverse("airport:crew-list")

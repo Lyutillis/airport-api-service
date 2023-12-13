@@ -5,18 +5,11 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from django.contrib.auth import get_user_model
 
-from airport.models import Country, City, Airport, Route, AirplaneType
+from airport.models import AirplaneType
 from airport.serializers import AirplaneTypeSerializer
-from config.settings import MEDIA_ROOT
 
 
 AIRPLANE_TYPE_URL = reverse("airport:airplane-type-list")
-
-def detail_url(type_id: int) -> str:
-    return reverse("airport:airplane-type-detail", args=[type_id])
-
-def upload_image_url(type_id: int) -> str:
-    return reverse("airport:airplane-type-upload-image", args=[type_id])
 
 def sample_airplane_type(**params):
     defaults = {

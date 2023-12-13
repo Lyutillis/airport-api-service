@@ -6,9 +6,9 @@ from rest_framework import status
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from airport.models import Country, City, Airport, Route, Airplane, AirplaneType
-from airport.serializers import AirportListSerializer, AirportDetailSerializer, AirplaneSerializer, AirplaneImageSerializer
-from config.settings import MEDIA_ROOT
+from airport.models import Airplane, AirplaneType
+from airport.serializers import AirplaneSerializer
+from config.settings import BASE_DIR
 
 
 AIRPLANE_URL = reverse("airport:airplane-list")
@@ -68,7 +68,7 @@ class AuthenticatedAirplaneApiTests(TestCase):
             "image": SimpleUploadedFile(
                 name="test_image.jpg",
                 content=open(
-                    os.path.join(MEDIA_ROOT, "test_image.jpg"), "rb"
+                    os.path.join(BASE_DIR, "media", "test_image.jpg"), "rb"
                 ).read(),
                 content_type="image/jpg",
             )
@@ -131,7 +131,7 @@ class AdminAirplaneApiTests(TestCase):
             "image": SimpleUploadedFile(
                 name="test_image.jpg",
                 content=open(
-                    os.path.join(MEDIA_ROOT, "test_image.jpg"), "rb"
+                    os.path.join(BASE_DIR, "media", "test_image.jpg"), "rb"
                 ).read(),
                 content_type="image/jpg",
             )

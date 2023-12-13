@@ -6,12 +6,9 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from django.contrib.auth import get_user_model
-from django.core.files.uploadedfile import SimpleUploadedFile
 
-from airport.models import Country, City, Airport, Route, Flight, Route, AirplaneType, Airplane, Crew, Order, Ticket
-from airport.serializers import OrderSerializer, OrderListSerializer, TicketSerializer
-from airport.views import OrderPagination
-from config.settings import MEDIA_ROOT
+from airport.models import Country, City, Airport, Route, Flight, Route, AirplaneType, Airplane, Order
+from airport.serializers import OrderListSerializer
 
 
 ORDER_URL = reverse("airport:order-list")
