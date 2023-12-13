@@ -17,7 +17,9 @@ from airport.models import (
 
 
 class AirportSerializer(serializers.ModelSerializer):
-    country = serializers.CharField(max_length=83, source="closest_big_city.country.name", read_only=True)
+    country = serializers.CharField(
+        max_length=83, source="closest_big_city.country.name", read_only=True
+    )
 
     class Meta:
         model = Airport
@@ -25,12 +27,21 @@ class AirportSerializer(serializers.ModelSerializer):
 
 
 class AirportListSerializer(AirportSerializer):
-    closest_big_city = serializers.SlugRelatedField(many=False, slug_field="name", read_only=True)
+    closest_big_city = serializers.SlugRelatedField(
+        many=False, slug_field="name", read_only=True
+    )
     routes_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Airport
-        fields = ("id", "name", "country", "closest_big_city", "routes_count", "image",)
+        fields = (
+            "id",
+            "name",
+            "country",
+            "closest_big_city",
+            "routes_count",
+            "image",
+        )
 
 
 class CrewSerializer(serializers.ModelSerializer):
@@ -68,13 +79,23 @@ class AirportRouteSerializer(RouteSerializer):
 
 
 class AirportDetailSerializer(AirportSerializer):
-    closest_big_city = serializers.SlugRelatedField(many=False, slug_field="name", read_only=True)
+    closest_big_city = serializers.SlugRelatedField(
+        many=False, slug_field="name", read_only=True
+    )
     source_routes = AirportRouteSerializer(many=True, read_only=True)
     destination_routes = AirportRouteSerializer(many=True, read_only=True)
 
     class Meta:
         model = Airport
-        fields = ("id", "name", "country", "closest_big_city", "source_routes", "destination_routes", "image",)
+        fields = (
+            "id",
+            "name",
+            "country",
+            "closest_big_city",
+            "source_routes",
+            "destination_routes",
+            "image",
+        )
 
 
 class AirportImageSerializer(serializers.ModelSerializer):
@@ -92,13 +113,28 @@ class AirplaneImageSerializer(serializers.ModelSerializer):
 class AirplaneSerializer(serializers.ModelSerializer):
     class Meta:
         model = Airplane
-        fields = ("id", "name", "rows", "seats_in_row", "capacity", "airplane_type", "image",)
+        fields = (
+            "id",
+            "name",
+            "rows",
+            "seats_in_row",
+            "capacity",
+            "airplane_type",
+            "image",
+        )
 
 
 class FlightSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flight
-        fields = ("id", "route", "airplane", "departure_time", "arrival_time", "crews")
+        fields = (
+            "id",
+            "route",
+            "airplane",
+            "departure_time",
+            "arrival_time",
+            "crews",
+        )
 
 
 class FlightListSerializer(FlightSerializer):
@@ -107,7 +143,10 @@ class FlightListSerializer(FlightSerializer):
         read_only=True
     )
     tickets_available = serializers.IntegerField(read_only=True)
-    airplane_image = serializers.ImageField(source="airplane.image", read_only=True)
+    airplane_image = serializers.ImageField(
+        source="airplane.image",
+        read_only=True
+    )
 
     class Meta:
         model = Flight
@@ -161,7 +200,7 @@ class FlightDetailSerializer(FlightSerializer):
         read_only=True
     )
     taken_places = TicketSeatsSerializer(
-        source="tickets", many=True, read_only=True 
+        source="tickets", many=True, read_only=True
     )
     route = RouteSerializer(
         many=False, read_only=True
@@ -185,7 +224,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ("id", "tickets", "created_at")
-    
+
     def create(self, validated_data):
         with transaction.atomic():
             tickets_data = validated_data.pop("tickets")

@@ -71,7 +71,7 @@ class AirportViewSet(
 
         if self.action == "retrieve":
             return AirportDetailSerializer
-        
+
         if self.action == "upload_image":
             return AirportImageSerializer
 
@@ -83,24 +83,32 @@ class AirportViewSet(
         dep_cities = self.request.query_params.get("dep_cities")
         dest_countries = self.request.query_params.get("dest_countries")
         dest_cities = self.request.query_params.get("dest_cities")
-        
+
         queryset = self.queryset
 
         if dep_countries:
             dep_countries = self._params_to_str(dep_countries)
-            queryset = queryset.filter(closest_big_city__country__name__in=dep_countries)
+            queryset = queryset.filter(
+                closest_big_city__country__name__in=dep_countries
+            )
 
         if dep_cities:
             dep_cities = self._params_to_str(dep_cities)
-            queryset = queryset.filter(closest_big_city__name__in=dep_cities)
-        
+            queryset = queryset.filter(
+                closest_big_city__name__in=dep_cities
+            )
+
         if dest_countries:
             dest_countries = self._params_to_str(dest_countries)
-            queryset = queryset.filter(destination_routes__destination__closest_big_city__country__name__in=dest_countries)
-        
+            queryset = queryset.filter(
+                destination_routes__destination__closest_big_city__country__name__in=dest_countries
+            )
+
         if dest_cities:
             dest_cities = self._params_to_str(dest_cities)
-            queryset = queryset.filter(destination_routes__destination__closest_big_city__name__in=dest_cities)
+            queryset = queryset.filter(
+                destination_routes__destination__closest_big_city__name__in=dest_cities
+            )
 
         return queryset.distinct()
 
@@ -194,7 +202,7 @@ class CrewViewSet(
     def get_queryset(self):
         """Retrieve the staff with filters"""
         flight_ids = self.request.query_params.get("flights")
-        
+
         queryset = self.queryset
 
         if flight_ids:
@@ -280,24 +288,32 @@ class RouteViewSet(
         dep_cities = self.request.query_params.get("dep_cities")
         dest_countries = self.request.query_params.get("dest_countries")
         dest_cities = self.request.query_params.get("dest_cities")
-        
+
         queryset = self.queryset
 
         if dep_countries:
             dep_countries = self._params_to_str(dep_countries)
-            queryset = queryset.filter(source__closest_big_city__country__name__in=dep_countries)
+            queryset = queryset.filter(
+                source__closest_big_city__country__name__in=dep_countries
+            )
 
         if dep_cities:
             dep_cities = self._params_to_str(dep_cities)
-            queryset = queryset.filter(source__closest_big_city__name__in=dep_cities)
-        
+            queryset = queryset.filter(
+                source__closest_big_city__name__in=dep_cities
+            )
+
         if dest_countries:
             dest_countries = self._params_to_str(dest_countries)
-            queryset = queryset.filter(destination__closest_big_city__country__name__in=dest_countries)
-        
+            queryset = queryset.filter(
+                destination__closest_big_city__country__name__in=dest_countries
+            )
+
         if dest_cities:
             dest_cities = self._params_to_str(dest_cities)
-            queryset = queryset.filter(destination__closest_big_city__name__in=dest_cities)
+            queryset = queryset.filter(
+                destination__closest_big_city__name__in=dest_cities
+            )
 
         return queryset.distinct()
 
